@@ -1,16 +1,7 @@
-
-function scaleValue (value, from, to) {
-  const scale = (to[1] - to[0]) / (from[1] - from[0]);
-  const capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
-
-  // eslint-disable-next-line no-bitwise
-  return ~~(capped * scale + to[0]);
-}
-
 function generateCoordinates (i, frequencyData, canvasWidth, canvasHeight) {
-  const barWidth = (canvasWidth / frequencyData.length);
+  const barWidth = (canvasWidth / frequencyData.length); // eslint-disable-line no-bitwise
   const x = ~~(i * barWidth); // eslint-disable-line no-bitwise
-  const y = canvasHeight - scaleValue(frequencyData[i], [0, 255], [0, canvasHeight]);
+  const y = canvasHeight - ~~(Math.min(255, Math.max(0, frequencyData[i])) * (canvasHeight / 255)); // eslint-disable-line no-bitwise
 
   return [x, y];
 }
@@ -93,11 +84,12 @@ class AudioVisualiser extends HTMLElement {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
-      const canvasWidth = rect.width * dpr;
-      const canvasHeight = rect.height * dpr;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
 
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
+      this.canvasContext.fillStyle = this.fillStyle;
+      this.canvasContext.lineCap = 'round';
+      this.canvasContext.lineJoin = 'round';
 
       this.resizeObserver.observe(canvas);
     }
@@ -120,9 +112,6 @@ class AudioVisualiser extends HTMLElement {
 
     this.canvas = this.sDOM.querySelector('canvas');
     this.canvasContext = this.canvas.getContext('2d');
-    this.canvasContext.fillStyle = this.fillStyle;
-    this.canvasContext.lineCap = 'round';
-    this.canvasContext.lineJoin = 'round';
   }
 
   connectedCallback () {
