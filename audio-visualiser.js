@@ -6,7 +6,7 @@ function generateCoordinates (i, frequencyData, canvasWidth, canvasHeight) {
   return [x, y];
 }
 
-class AudioVisualiser extends HTMLElement {
+export default class AudioVisualiser extends HTMLElement {
   constructor () {
     super();
 
