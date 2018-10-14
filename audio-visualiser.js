@@ -14,6 +14,7 @@ class AudioVisualiser extends HTMLElement {
 
     /** @type {AnalyserNode|null} */
     this._analyser = null;
+    // @ts-ignore
     this.resizeObserver = new ResizeObserver(() => this.updateCanvasSize());
   }
 
