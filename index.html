@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio visualiser demo</title>
+  <style>
+  audio {
+    width: 100%;
+  }
+
+  small {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
+  audio-visualiser {
+    display: block;
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  </style>
+</head>
+<body>
+  <audio id="audio" src="worth-fighting-for.mp3" controls></audio><br>
+  <small><a href="https://soundcloud.com/crystalizemusic/rmxtk-wff-crystalized" target="_blank">Rico & Miella x TELYKast - Worth Fighting For (Crystalize Remix)</a></small>
+  <audio-visualiser id="visuals" color="rebeccapurple"></audio-visualiser>
+  <script type="module">
+    import 'https://unpkg.com/audio-visualiser?module';
+
+    const { audio, visuals } = window;
+
+    audio.currentTime = 41;
+
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaElementSource(audio);
+    const analyser = audioContext.createAnalyser();
+
+    analyser.fftSize = 1024;
+
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    visuals.analyser = analyser;
+
+    audio.addEventListener('play', () => {
+      console.log('playing');
+      visuals.start();
+    });
+    audio.addEventListener('pause', () => {
+      console.log('paused');
+      visuals.stop();
+    });
+  </script>
+</body>
+</html>
