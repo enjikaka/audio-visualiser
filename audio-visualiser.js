@@ -38,7 +38,10 @@ export default class AudioVisualiser extends HTMLElement {
   attributeChangedCallback (name, oldValue, newValue) {
     if (name === 'color' && newValue) {
       this.fillStyle = newValue;
-      this.canvasContext.fillStyle = newValue;
+
+      if (this.canvasContext) {
+        this.canvasContext.fillStyle = newValue;
+      }
     }
   }
 
@@ -113,6 +116,10 @@ export default class AudioVisualiser extends HTMLElement {
 
     this.canvas = this.sDOM.querySelector('canvas');
     this.canvasContext = this.canvas.getContext('2d');
+
+    if (this.fillStyle) {
+      this.canvasContext.fillStyle = this.fillStyle;
+    }
   }
 
   connectedCallback () {
