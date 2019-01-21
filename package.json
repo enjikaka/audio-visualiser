@@ -1,0 +1,26 @@
+{
+  "name": "audio-visualiser",
+  "version": "1.0.0",
+  "description": "Web component audio visualiser",
+  "main": "audio-visualiser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enjikaka/audio-visualiser.git"
+  },
+  "keywords": [
+    "music",
+    "audio",
+    "visualiser",
+    "web",
+    "component"
+  ],
+  "author": "Jeremy Karlsson <karlsson@jeremy.se>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/enjikaka/audio-visualiser/issues"
+  },
+  "homepage": "https://github.com/enjikaka/audio-visualiser#readme"
+}
