@@ -2,11 +2,11 @@
   "name": "audio-visualiser",
   "version": "1.0.0",
   "description": "Web component audio visualiser",
-  "main": "audio-visualiser.mjs",
+  "module": "audio-visualiser.js",
   "scripts": {
     "test": "npm-run-all lint:types lint:js",
     "lint:types": "tsc -p jsconfig.json --noEmit",
-    "lint:js": "eslint *.mjs"
+    "lint:js": "eslint *.js"
   },
   "repository": {
     "type": "git",
