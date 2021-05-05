@@ -7,7 +7,7 @@
     "build": "make build",
     "test": "npm-run-all lint:types lint:js",
     "lint:types": "tsc -p jsconfig.json --noEmit",
-    "lint:js": "eslint *.js"
+    "lint:js": "eslint src/*.js"
   },
   "repository": {
     "type": "git",
