@@ -36,7 +36,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this._animationLoop = 0;
 
-    this.resizeObserver = new ResizeObserver(() => requestAnimationFrame(() => this.updateCanvasSize()));
+    this.resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.updateCanvasSize(entry)));
   }
 
   /**
@@ -75,7 +75,7 @@ export default class AudioVisualiser extends HTMLElement {
   start () {
     const { canvas, canvasContext, _analyser: analyser } = this;
 
-    if (!analyser) {
+    if (!analyser || this._resizing) {
       throw new ReferenceError('Analyser has not been set');
     }
 
@@ -101,17 +101,19 @@ export default class AudioVisualiser extends HTMLElement {
     this.animationLoop = requestAnimationFrame(this.start.bind(this));
   }
 
-  updateCanvasSize () {
+  /**
+   * @param {ResizeObserverEntry|undefined} entry
+   * @returns {void}
+   */
+  updateCanvasSize (entry) {
     const { canvas } = this;
 
     if (canvas instanceof HTMLCanvasElement) {
-      const rect = canvas.getBoundingClientRect();
+      const rect = entry ? entry.contentRect : canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
-
-      this.canvasContext.fillStyle = this.fillStyle;
     }
   }
 
@@ -125,10 +127,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this.canvasContext.lineCap = 'round';
     this.canvasContext.lineJoin = 'round';
-
-    if (this.fillStyle) {
-      this.canvasContext.fillStyle = this.fillStyle;
-    }
+    this.canvasContext.fillStyle = this.fillStyle;
 
     this.resizeObserver.observe(this.canvas);
   }
