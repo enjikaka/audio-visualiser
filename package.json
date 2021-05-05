@@ -1,6 +1,6 @@
 {
   "name": "audio-visualiser",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Web component audio visualiser",
   "module": "audio-visualiser.js",
   "scripts": {
