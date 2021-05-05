@@ -6,6 +6,22 @@ function generateCoordinates (i, frequencyData, canvasWidth, canvasHeight) {
   return [x, y];
 }
 
+const html = tagString => document.createRange().createContextualFragment(tagString);
+
+const template = html(`
+  <style>
+    :host {
+      contain: strict;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <canvas></canvas>
+`);
+
 export default class AudioVisualiser extends HTMLElement {
   constructor () {
     super();
@@ -14,7 +30,12 @@ export default class AudioVisualiser extends HTMLElement {
 
     /** @type {AnalyserNode|null} */
     this._analyser = null;
-    // @ts-ignore
+
+    /** @type {ShadowRoot|null} */
+    this._sDOM = null;
+
+    this._animationLoop = 0;
+
     this.resizeObserver = new ResizeObserver(() => this.updateCanvasSize());
   }
 
@@ -36,7 +57,7 @@ export default class AudioVisualiser extends HTMLElement {
   }
 
   attributeChangedCallback (name, oldValue, newValue) {
-    if (name === 'color' && newValue) {
+    if (name === 'color' && newValue && newValue !== oldValue) {
       this.fillStyle = newValue;
 
       if (this.canvasContext) {
@@ -58,21 +79,20 @@ export default class AudioVisualiser extends HTMLElement {
       throw new ReferenceError('Analyser has not been set');
     }
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+    const { width, height } = canvas;
     const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
     analyser.getByteFrequencyData(frequencyData);
 
-    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
+    canvasContext.clearRect(0, 0, width, height);
     canvasContext.beginPath();
 
-    canvasContext.moveTo(0, canvasHeight);
+    canvasContext.moveTo(0, height);
 
     [...new Array(frequencyData.length)]
-      .map((_, i) => generateCoordinates(i, frequencyData, canvasWidth, canvasHeight))
-      .concat([[canvasWidth, canvasHeight]])
-      .concat([[0, canvasHeight]])
+      .map((_, i) => generateCoordinates(i, frequencyData, width, height))
+      .concat([[width, height]])
+      .concat([[0, height]])
       .forEach(([x, y]) => canvasContext.lineTo(x, y));
 
     canvasContext.closePath();
@@ -100,21 +120,11 @@ export default class AudioVisualiser extends HTMLElement {
   }
 
   render () {
-    this.sDOM.innerHTML = `
-      <style>
-      :host {
-        contain: strict;
-      }
+    const { _sDOM } = this;
 
-      canvas {
-        width: 100%;
-        height: 100%;
-      }
-      </style>
-      <canvas></canvas>
-    `;
+    _sDOM.appendChild(template.cloneNode(true));
 
-    this.canvas = this.sDOM.querySelector('canvas');
+    this.canvas = _sDOM.querySelector('canvas');
     this.canvasContext = this.canvas.getContext('2d');
 
     if (this.fillStyle) {
@@ -123,7 +133,8 @@ export default class AudioVisualiser extends HTMLElement {
   }
 
   connectedCallback () {
-    this.sDOM = this.attachShadow({ mode: 'closed' });
+    this._sDOM = this.attachShadow({ mode: 'closed' });
+
     this.render();
     this.updateCanvasSize();
   }
