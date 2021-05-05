@@ -59,10 +59,7 @@ export default class AudioVisualiser extends HTMLElement {
   attributeChangedCallback (name, oldValue, newValue) {
     if (name === 'color' && newValue && newValue !== oldValue) {
       this.fillStyle = newValue;
-
-      if (this.canvasContext) {
-        this.canvasContext.fillStyle = newValue;
-      }
+      this.updateCanvasColor();
     }
   }
 
@@ -117,6 +114,12 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
+  updateCanvasColor () {
+    if (this.canvasContext) {
+      this.canvasContext.fillStyle = this.fillStyle;
+    }
+  }
+
   render () {
     const { _sDOM } = this;
 
@@ -127,7 +130,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this.canvasContext.lineCap = 'round';
     this.canvasContext.lineJoin = 'round';
-    this.canvasContext.fillStyle = this.getAttribute('color') || this.fillStyle;
+    this.fillStyle = this.getAttribute('color');
 
     this.resizeObserver.observe(this.canvas);
   }
@@ -137,6 +140,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this.render();
     this.updateCanvasSize();
+    this.updateCanvasColor();
   }
 }
 
