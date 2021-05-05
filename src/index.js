@@ -72,7 +72,7 @@ export default class AudioVisualiser extends HTMLElement {
   start () {
     const { canvas, canvasContext, _analyser: analyser } = this;
 
-    if (!analyser || this._resizing) {
+    if (!analyser) {
       throw new ReferenceError('Analyser has not been set');
     }
 
