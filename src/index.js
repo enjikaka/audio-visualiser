@@ -127,7 +127,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this.canvasContext.lineCap = 'round';
     this.canvasContext.lineJoin = 'round';
-    this.canvasContext.fillStyle = this.fillStyle;
+    this.canvasContext.fillStyle = this.getAttribute('color') || this.fillStyle;
 
     this.resizeObserver.observe(this.canvas);
   }
