@@ -36,7 +36,7 @@ export default class AudioVisualiser extends HTMLElement {
 
     this._animationLoop = 0;
 
-    this.resizeObserver = new ResizeObserver(() => this.updateCanvasSize());
+    this.resizeObserver = new ResizeObserver(() => requestAnimationFrame(() => this.updateCanvasSize()));
   }
 
   /**
@@ -112,10 +112,6 @@ export default class AudioVisualiser extends HTMLElement {
       canvas.height = rect.height * dpr;
 
       this.canvasContext.fillStyle = this.fillStyle;
-      this.canvasContext.lineCap = 'round';
-      this.canvasContext.lineJoin = 'round';
-
-      this.resizeObserver.observe(canvas);
     }
   }
 
@@ -127,9 +123,14 @@ export default class AudioVisualiser extends HTMLElement {
     this.canvas = _sDOM.querySelector('canvas');
     this.canvasContext = this.canvas.getContext('2d');
 
+    this.canvasContext.lineCap = 'round';
+    this.canvasContext.lineJoin = 'round';
+
     if (this.fillStyle) {
       this.canvasContext.fillStyle = this.fillStyle;
     }
+
+    this.resizeObserver.observe(this.canvas);
   }
 
   connectedCallback () {
