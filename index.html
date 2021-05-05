@@ -37,6 +37,7 @@
     audio.currentTime = 41;
 
     const audioContext = new AudioContext();
+
     const source = audioContext.createMediaElementSource(audio);
     const analyser = audioContext.createAnalyser();
 
@@ -48,9 +49,11 @@
     visuals.analyser = analyser;
 
     audio.addEventListener('play', () => {
+      audioContext.resume();
       console.log('playing');
       visuals.start();
     });
+
     audio.addEventListener('pause', () => {
       console.log('paused');
       visuals.stop();
