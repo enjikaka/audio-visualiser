@@ -1,6 +1,6 @@
 {
   "name": "audio-visualiser",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Web component audio visualiser",
   "scripts": {
     "build": "make build",
