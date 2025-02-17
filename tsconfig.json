@@ -8,7 +8,8 @@
     "target": "ES2024",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "pkg"
+    "outDir": "pkg",
+    "isolatedDeclarations": true
   },
   "include": ["src/*"]
 }

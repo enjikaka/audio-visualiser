@@ -6,7 +6,7 @@ function generateCoordinates(i, frequencyData, canvasWidth, canvasHeight) {
   return [x, y];
 }
 
-export const html = (...args) => {
+export const html: (args: TemplateStringsArray) => Node = (...args) => {
   // @ts-ignore
   const text = String.raw(...args);
 
@@ -46,10 +46,7 @@ export default class AudioVisualiser extends HTMLElement {
     this.#resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.updateCanvasSize(entry[0])));
   }
 
-  /**
-   * @param {AnalyserNode} analyser
-   */
-  set analyser(analyser) {
+  set analyser(analyser: AnalyserNode) {
     if (analyser instanceof AnalyserNode) {
       this.#analyser = analyser;
     } else {
@@ -59,24 +56,24 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return ['color'];
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (name === 'color' && newValue && newValue !== oldValue) {
       this.fillStyle = newValue;
       this.updateCanvasColor();
     }
   }
 
-  stop() {
+  stop(): void {
     cancelAnimationFrame(this.#animationLoop);
 
     this.#animationLoop = undefined;
   }
 
-  start() {
+  start(): void {
     if (!this.#analyser) {
       throw new ReferenceError('Analyser has not been set');
     }
@@ -119,13 +116,13 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
-  updateCanvasColor() {
+  updateCanvasColor(): void {
     if (this.#context) {
       this.#context.fillStyle = this.fillStyle;
     }
   }
 
-  render() {
+  render(): void {
     const sDOM = this.#sDOM;
 
     sDOM.appendChild(template.cloneNode(true));
@@ -140,7 +137,7 @@ export default class AudioVisualiser extends HTMLElement {
     this.#resizeObserver.observe(this.#canvas);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.#sDOM = this.attachShadow({ mode: 'closed' });
 
     this.render();
