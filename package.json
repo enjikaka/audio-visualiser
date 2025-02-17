@@ -5,7 +5,7 @@
   "module": "audio-visualiser.js",
   "scripts": {
     "build": "make build",
-    "lint:js": "biome lint",
+    "lint:js": "biome lint src/",
     "lint:types": "tsc -p jsconfig.json --noEmit",
     "test": "make test"
   },
