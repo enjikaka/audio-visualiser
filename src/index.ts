@@ -1,4 +1,4 @@
-function generateCoordinates(i, frequencyData, canvasWidth, canvasHeight) {
+function generateCoordinates(i: number, frequencyData: Uint8Array<ArrayBuffer>, canvasWidth: number, canvasHeight: number): [number, number] {
   const barWidth = (canvasWidth / frequencyData.length);
   const x = ~~(i * barWidth);
   const y = canvasHeight - ~~(Math.min(255, Math.max(0, frequencyData[i])) * (canvasHeight / 255));
@@ -6,7 +6,10 @@ function generateCoordinates(i, frequencyData, canvasWidth, canvasHeight) {
   return [x, y];
 }
 
-export const html: (args: TemplateStringsArray) => Node = (...args) => {
+/**
+ * Template String helper for creating document fragments from a string of HTML.
+ */
+const html: (args: TemplateStringsArray) => Node = (...args) => {
   // @ts-ignore
   const text = String.raw(...args);
 
@@ -31,6 +34,9 @@ const template = html`
   <canvas></canvas>
 `;
 
+/**
+ * AudioVisualiser Web Component
+ */
 export default class AudioVisualiser extends HTMLElement {
   fillStyle: string = '#fff';
   #canvas: HTMLCanvasElement = null;
@@ -43,7 +49,7 @@ export default class AudioVisualiser extends HTMLElement {
   constructor() {
     super();
 
-    this.#resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.updateCanvasSize(entry[0])));
+    this.#resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.#updateCanvasSize(entry[0])));
   }
 
   set analyser(analyser: AnalyserNode) {
@@ -63,7 +69,7 @@ export default class AudioVisualiser extends HTMLElement {
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (name === 'color' && newValue && newValue !== oldValue) {
       this.fillStyle = newValue;
-      this.updateCanvasColor();
+      this.#updateCanvasColor();
     }
   }
 
@@ -104,7 +110,7 @@ export default class AudioVisualiser extends HTMLElement {
     this.#animationLoop = requestAnimationFrame(this.start.bind(this));
   }
 
-  updateCanvasSize(entry?: ResizeObserverEntry): void {
+  #updateCanvasSize(entry?: ResizeObserverEntry): void {
     const canvas = this.#canvas;
 
     if (canvas instanceof HTMLCanvasElement) {
@@ -116,13 +122,13 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
-  updateCanvasColor(): void {
+  #updateCanvasColor(): void {
     if (this.#context) {
       this.#context.fillStyle = this.fillStyle;
     }
   }
 
-  render(): void {
+  #render(): void {
     const sDOM = this.#sDOM;
 
     sDOM.appendChild(template.cloneNode(true));
@@ -140,9 +146,9 @@ export default class AudioVisualiser extends HTMLElement {
   connectedCallback(): void {
     this.#sDOM = this.attachShadow({ mode: 'closed' });
 
-    this.render();
-    this.updateCanvasSize();
-    this.updateCanvasColor();
+    this.#render();
+    this.#updateCanvasSize();
+    this.#updateCanvasColor();
   }
 }
 
