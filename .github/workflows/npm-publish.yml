@@ -23,6 +23,6 @@ jobs:
         with:
           name: build
           path: pkg
-      - run: npm publish pkg
+      - run: npm publish ./pkg
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
