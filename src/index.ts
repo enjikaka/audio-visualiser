@@ -105,6 +105,7 @@ export default class AudioVisualiser extends HTMLElement {
     }
 
     ctx.closePath();
+    ctx.fillStyle = this.fillStyle;
     ctx.fill();
 
     this.#animationLoop = requestAnimationFrame(this.start.bind(this));

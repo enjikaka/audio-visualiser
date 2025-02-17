@@ -1,33 +1,29 @@
 {
-  "name": "audio-visualiser",
-  "version": "1.0.11",
-  "description": "Web component audio visualiser",
-  "scripts": {
-    "build": "make build",
-    "lint:js": "biome lint src/",
-    "lint:types": "tsc -p tsconfig.json --noEmit",
-    "test": "make test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/enjikaka/audio-visualiser.git"
-  },
-  "keywords": [
-    "music",
-    "audio",
-    "visualiser",
-    "web",
-    "component"
-  ],
-  "author": "Jeremy Karlsson <karlsson@jeremy.se>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/enjikaka/audio-visualiser/issues"
-  },
-  "homepage": "https://github.com/enjikaka/audio-visualiser#readme",
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "esbuild": "^0.25.0",
-    "typescript": "^5.7.3"
-  }
+	"name": "audio-visualiser",
+	"version": "1.0.11",
+	"description": "Web component audio visualiser",
+	"scripts": {
+		"build": "make build",
+		"lint:js": "biome lint src/",
+		"lint:types": "tsc -p tsconfig.json --noEmit",
+		"test": "make test",
+		"start": "npm run build && http-server . -p 8080"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/enjikaka/audio-visualiser.git"
+	},
+	"keywords": ["music", "audio", "visualiser", "web", "component"],
+	"author": "Jeremy Karlsson <karlsson@jeremy.se>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/enjikaka/audio-visualiser/issues"
+	},
+	"homepage": "https://github.com/enjikaka/audio-visualiser#readme",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"esbuild": "^0.25.0",
+		"http-server": "^14.1.1",
+		"typescript": "^5.7.3"
+	}
 }
