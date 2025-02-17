@@ -7,6 +7,7 @@ function generateCoordinates(i, frequencyData, canvasWidth, canvasHeight) {
 }
 
 export const html = (...args) => {
+  // @ts-ignore
   const text = String.raw(...args);
 
   const template = document.createElement('template');
@@ -31,20 +32,18 @@ const template = html`
 `;
 
 export default class AudioVisualiser extends HTMLElement {
+  fillStyle: string = '#fff';
+  #canvas: HTMLCanvasElement = null;
+  #context: CanvasRenderingContext2D = null;
+  #analyser: AnalyserNode = null;
+  #sDOM: ShadowRoot = null;
+  #animationLoop: number = 0;
+  #resizeObserver: ResizeObserver = null;
+
   constructor() {
     super();
 
-    this.fillStyle = '#ffffff';
-
-    /** @type {AnalyserNode|null} */
-    this._analyser = null;
-
-    /** @type {ShadowRoot|null} */
-    this._sDOM = null;
-
-    this._animationLoop = 0;
-
-    this.resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.updateCanvasSize(entry)));
+    this.#resizeObserver = new ResizeObserver(entry => requestAnimationFrame(() => this.updateCanvasSize(entry[0])));
   }
 
   /**
@@ -52,7 +51,7 @@ export default class AudioVisualiser extends HTMLElement {
    */
   set analyser(analyser) {
     if (analyser instanceof AnalyserNode) {
-      this._analyser = analyser;
+      this.#analyser = analyser;
     } else {
       const actualType = typeof analyser;
 
@@ -72,27 +71,26 @@ export default class AudioVisualiser extends HTMLElement {
   }
 
   stop() {
-    cancelAnimationFrame(this.animationLoop);
+    cancelAnimationFrame(this.#animationLoop);
 
-    this.animationLoop = undefined;
+    this.#animationLoop = undefined;
   }
 
   start() {
-    const { canvas, canvasContext, _analyser: analyser } = this;
-
-    if (!analyser) {
+    if (!this.#analyser) {
       throw new ReferenceError('Analyser has not been set');
     }
 
-    const { width, height } = canvas;
-    const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    const { width, height } = this.#canvas;
+    const ctx = this.#context;
+    const frequencyData = new Uint8Array(this.#analyser.frequencyBinCount);
 
-    analyser.getByteFrequencyData(frequencyData);
+    this.#analyser.getByteFrequencyData(frequencyData);
 
-    canvasContext.clearRect(0, 0, width, height);
-    canvasContext.beginPath();
+    ctx.clearRect(0, 0, width, height);
+    ctx.beginPath();
 
-    canvasContext.moveTo(0, height);
+    ctx.moveTo(0, height);
 
     const lines = [...new Array(frequencyData.length)]
       .map((_, i) => generateCoordinates(i, frequencyData, width, height))
@@ -100,21 +98,17 @@ export default class AudioVisualiser extends HTMLElement {
       .concat([[0, height]]);
 
     for (const [x, y] of lines) {
-      canvasContext.lineTo(x, y);
+      ctx.lineTo(x, y);
     }
 
-    canvasContext.closePath();
-    canvasContext.fill();
+    ctx.closePath();
+    ctx.fill();
 
-    this.animationLoop = requestAnimationFrame(this.start.bind(this));
+    this.#animationLoop = requestAnimationFrame(this.start.bind(this));
   }
 
-  /**
-   * @param {ResizeObserverEntry|undefined} entry
-   * @returns {void}
-   */
-  updateCanvasSize(entry) {
-    const { canvas } = this;
+  updateCanvasSize(entry?: ResizeObserverEntry): void {
+    const canvas = this.#canvas;
 
     if (canvas instanceof HTMLCanvasElement) {
       const rect = entry ? entry.contentRect : canvas.getBoundingClientRect();
@@ -126,28 +120,28 @@ export default class AudioVisualiser extends HTMLElement {
   }
 
   updateCanvasColor() {
-    if (this.canvasContext) {
-      this.canvasContext.fillStyle = this.fillStyle;
+    if (this.#context) {
+      this.#context.fillStyle = this.fillStyle;
     }
   }
 
   render() {
-    const { _sDOM } = this;
+    const sDOM = this.#sDOM;
 
-    _sDOM.appendChild(template.cloneNode(true));
+    sDOM.appendChild(template.cloneNode(true));
 
-    this.canvas = _sDOM.querySelector('canvas');
-    this.canvasContext = this.canvas.getContext('2d');
+    this.#canvas = sDOM.querySelector('canvas');
+    this.#context = this.#canvas.getContext('2d');
 
-    this.canvasContext.lineCap = 'round';
-    this.canvasContext.lineJoin = 'round';
+    this.#context.lineCap = 'round';
+    this.#context.lineJoin = 'round';
     this.fillStyle = this.getAttribute('color');
 
-    this.resizeObserver.observe(this.canvas);
+    this.#resizeObserver.observe(this.#canvas);
   }
 
   connectedCallback() {
-    this._sDOM = this.attachShadow({ mode: 'closed' });
+    this.#sDOM = this.attachShadow({ mode: 'closed' });
 
     this.render();
     this.updateCanvasSize();

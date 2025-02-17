@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "lib": [
+      "DOM",
+      "ES2024"
+    ],
+    "module": "ESNext",
+    "target": "ES2024",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "pkg"
