@@ -2,7 +2,6 @@
   "name": "audio-visualiser",
   "version": "1.0.9",
   "description": "Web component audio visualiser",
-  "module": "audio-visualiser.js",
   "scripts": {
     "build": "make build",
     "lint:js": "biome lint src/",
