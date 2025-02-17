@@ -1,14 +1,22 @@
-function generateCoordinates (i, frequencyData, canvasWidth, canvasHeight) {
-  const barWidth = (canvasWidth / frequencyData.length); // eslint-disable-line no-bitwise
-  const x = ~~(i * barWidth); // eslint-disable-line no-bitwise
-  const y = canvasHeight - ~~(Math.min(255, Math.max(0, frequencyData[i])) * (canvasHeight / 255)); // eslint-disable-line no-bitwise
+function generateCoordinates(i, frequencyData, canvasWidth, canvasHeight) {
+  const barWidth = (canvasWidth / frequencyData.length);
+  const x = ~~(i * barWidth);
+  const y = canvasHeight - ~~(Math.min(255, Math.max(0, frequencyData[i])) * (canvasHeight / 255));
 
   return [x, y];
 }
 
-const html = tagString => document.createRange().createContextualFragment(tagString);
+export const html = (...args) => {
+  const text = String.raw(...args);
 
-const template = html(`
+  const template = document.createElement('template');
+
+  template.innerHTML = text;
+
+  return template.content.cloneNode(true);
+};
+
+const template = html`
   <style>
     :host {
       contain: strict;
@@ -20,10 +28,10 @@ const template = html(`
     }
   </style>
   <canvas></canvas>
-`);
+`;
 
 export default class AudioVisualiser extends HTMLElement {
-  constructor () {
+  constructor() {
     super();
 
     this.fillStyle = '#ffffff';
@@ -42,7 +50,7 @@ export default class AudioVisualiser extends HTMLElement {
   /**
    * @param {AnalyserNode} analyser
    */
-  set analyser (analyser) {
+  set analyser(analyser) {
     if (analyser instanceof AnalyserNode) {
       this._analyser = analyser;
     } else {
@@ -52,24 +60,24 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
-  static get observedAttributes () {
+  static get observedAttributes() {
     return ['color'];
   }
 
-  attributeChangedCallback (name, oldValue, newValue) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'color' && newValue && newValue !== oldValue) {
       this.fillStyle = newValue;
       this.updateCanvasColor();
     }
   }
 
-  stop () {
+  stop() {
     cancelAnimationFrame(this.animationLoop);
 
     this.animationLoop = undefined;
   }
 
-  start () {
+  start() {
     const { canvas, canvasContext, _analyser: analyser } = this;
 
     if (!analyser) {
@@ -86,11 +94,14 @@ export default class AudioVisualiser extends HTMLElement {
 
     canvasContext.moveTo(0, height);
 
-    [...new Array(frequencyData.length)]
+    const lines = [...new Array(frequencyData.length)]
       .map((_, i) => generateCoordinates(i, frequencyData, width, height))
       .concat([[width, height]])
-      .concat([[0, height]])
-      .forEach(([x, y]) => canvasContext.lineTo(x, y));
+      .concat([[0, height]]);
+
+    for (const [x, y] of lines) {
+      canvasContext.lineTo(x, y);
+    }
 
     canvasContext.closePath();
     canvasContext.fill();
@@ -102,7 +113,7 @@ export default class AudioVisualiser extends HTMLElement {
    * @param {ResizeObserverEntry|undefined} entry
    * @returns {void}
    */
-  updateCanvasSize (entry) {
+  updateCanvasSize(entry) {
     const { canvas } = this;
 
     if (canvas instanceof HTMLCanvasElement) {
@@ -114,13 +125,13 @@ export default class AudioVisualiser extends HTMLElement {
     }
   }
 
-  updateCanvasColor () {
+  updateCanvasColor() {
     if (this.canvasContext) {
       this.canvasContext.fillStyle = this.fillStyle;
     }
   }
 
-  render () {
+  render() {
     const { _sDOM } = this;
 
     _sDOM.appendChild(template.cloneNode(true));
@@ -135,7 +146,7 @@ export default class AudioVisualiser extends HTMLElement {
     this.resizeObserver.observe(this.canvas);
   }
 
-  connectedCallback () {
+  connectedCallback() {
     this._sDOM = this.attachShadow({ mode: 'closed' });
 
     this.render();
