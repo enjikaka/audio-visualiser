@@ -6,6 +6,13 @@
 	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
 	"features": {
 		"ghcr.io/devcontainers-community/features/deno:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"biomejs.biome"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
