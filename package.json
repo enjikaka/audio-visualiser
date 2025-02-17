@@ -6,7 +6,8 @@
   "scripts": {
     "build": "make build",
     "lint:js": "biome lint",
-    "lint:types": "tsc -p jsconfig.json --noEmit"
+    "lint:types": "tsc -p jsconfig.json --noEmit",
+    "test": "make test"
   },
   "repository": {
     "type": "git",

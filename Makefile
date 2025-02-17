@@ -9,3 +9,7 @@ release:
 	make build
 	cd pkg && npm publish
 	git push --follow-tags
+
+test:
+	npm run lint:js
+	npm run lint:types
