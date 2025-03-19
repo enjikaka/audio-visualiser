@@ -28,36 +28,7 @@
   <body>
     <audio id="audio" src="worth-fighting-for.mp3" controls></audio><br>
     <small><a href="https://soundcloud.com/crystalizemusic/rmxtk-wff-crystalized" target="_blank">Rico & Miella x TELYKast - Worth Fighting For (Crystalize Remix)</a></small>
-    <audio-visualizer id="visuals" color="rebeccapurple"></audio-visualiser>
-    <script type="module">
-      import 'https://esm.sh/jsr/@enjikaka/audio-visualiser';
-
-    const { audio, visuals } = window;
-
-    audio.currentTime = 41;
-
-    const audioContext = new AudioContext();
-
-    const source = audioContext.createMediaElementSource(audio);
-    const analyser = audioContext.createAnalyser();
-
-    analyser.fftSize = 1024;
-
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-
-    visuals.analyser = analyser;
-
-    audio.addEventListener('play', () => {
-      audioContext.resume();
-      console.log('playing');
-      visuals.start();
-    });
-
-    audio.addEventListener('pause', () => {
-      console.log('paused');
-      visuals.stop();
-    });
-    </script>
+    <audio-visualiser id="visuals" color="rebeccapurple"></audio-visualiser>
+    <script type="module" src="index.js"></script>
   </body>
 </html>
