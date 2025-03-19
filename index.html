@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio visualiser demo</title>
-  <style>
-  audio {
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio visualiser demo</title>
+    <style>
+      audio {
     width: 100%;
   }
 
@@ -23,14 +23,14 @@
     bottom: 0;
     left: 0;
   }
-  </style>
-</head>
-<body>
-  <audio id="audio" src="worth-fighting-for.mp3" controls></audio><br>
-  <small><a href="https://soundcloud.com/crystalizemusic/rmxtk-wff-crystalized" target="_blank">Rico & Miella x TELYKast - Worth Fighting For (Crystalize Remix)</a></small>
-  <audio-visualiser id="visuals" color="rebeccapurple"></audio-visualiser>
-  <script type="module">
-    import 'https://cdn.skypack.dev/audio-visualiser';
+    </style>
+  </head>
+  <body>
+    <audio id="audio" src="worth-fighting-for.mp3" controls></audio><br>
+    <small><a href="https://soundcloud.com/crystalizemusic/rmxtk-wff-crystalized" target="_blank">Rico & Miella x TELYKast - Worth Fighting For (Crystalize Remix)</a></small>
+    <audio-visualizer id="visuals" color="rebeccapurple"></audio-visualiser>
+    <script type="module">
+      import 'https://esm.sh/jsr/@enjikaka/audio-visualiser';
 
     const { audio, visuals } = window;
 
@@ -58,6 +58,6 @@
       console.log('paused');
       visuals.stop();
     });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
